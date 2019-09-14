@@ -111,6 +111,26 @@ module Boxr
       end
     end
 
+    def upload_remote_file(file_url, parent, name = nil, content_created_at = nil, content_modified_at = nil)
+      parent_id  = ensure_id(parent)
+      name       = name ? name : File.basename(file_url)
+
+      attributes = {name: name, parent: {id: parent_id}}
+      attributes[:content_created_at] = content_created_at.to_datetime.rfc3339 unless content_created_at.nil?
+      attributes[:content_modified_at] = content_modified_at.to_datetime.rfc3339 unless content_modified_at.nil?
+
+      file      = Tempfile.new
+      file.binmode
+      file << open(file_url).read
+      file.close
+      file = File.open(file.path)
+
+      body = {attributes: JSON.dump(attributes), file: file}
+      file_info, response = post(FILES_UPLOAD_URI, body, process_body: false)
+
+      file_info.entries[0]
+    end
+
     def upload_file_from_io(io, parent, name:, content_created_at: nil, content_modified_at: nil, preflight_check: true, send_content_md5: true)
       parent_id = ensure_id(parent)
 
