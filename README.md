@@ -209,7 +209,7 @@ download_url(file, version: nil)
 upload_file(path_to_file, parent, content_created_at: nil, content_modified_at: nil,
             preflight_check: true, send_content_md5: true)
 
-upload_remote_file(path_to_file, parent, content_created_at: nil, content_modified_at: nil)
+upload_remote_file(file_url, parent, content_created_at: nil, content_modified_at: nil)
 
 delete_file(file, if_match: nil)
 
